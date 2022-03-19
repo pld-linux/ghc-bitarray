@@ -6,7 +6,7 @@
 Summary:	Mutable and immutable bit arrays
 Name:		ghc-%{pkgname}
 Version:	0.0.1.1
-Release:	1
+Release:	2
 License:	BSD
 Group:		Development/Languages
 #Source0Download: http://hackage.haskell.org/package/bitarray
