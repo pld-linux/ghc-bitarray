@@ -4,6 +4,7 @@
 #
 %define		pkgname	bitarray
 Summary:	Mutable and immutable bit arrays
+Summary(pl.UTF-8):	Zmienne i niezmienne tablice bitowe
 Name:		ghc-%{pkgname}
 Version:	0.0.1.1
 Release:	2
@@ -14,12 +15,20 @@ Source0:	http://hackage.haskell.org/package/%{pkgname}-%{version}/%{pkgname}-%{v
 # Source0-md5:	7cab4ee3f34aefb29b63b0951d3a30c6
 URL:		http://hackage.haskell.org/package/bitarray
 BuildRequires:	ghc >= 6.12.3
+BuildRequires:	ghc-array >= 0.4
+BuildRequires:	ghc-base >= 3
+BuildRequires:	ghc-base < 5
 %if %{with prof}
-BuildRequires:	ghc-prof
+BuildRequires:	ghc-prof >= 6.12.3
+BuildRequires:	ghc-array-prof >= 0.4
+BuildRequires:	ghc-base-prof >= 3
+BuildRequires:	ghc-base-prof < 5
 %endif
 BuildRequires:	rpmbuild(macros) >= 1.608
 %requires_eq	ghc
 Requires(post,postun):	/usr/bin/ghc-pkg
+Requires:	ghc-array >= 0.4
+Requires:	ghc-base >= 3
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 # debuginfo is not useful for ghc
@@ -31,15 +40,20 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %description
 Mutable and immutable bit arrays.
 
+%description -l pl.UTF-8
+Zmienne i niezmienne tablice bitowe.
+
 %package prof
 Summary:	Profiling %{pkgname} library for GHC
 Summary(pl.UTF-8):	Biblioteka profilująca %{pkgname} dla GHC
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
+Requires:	ghc-array-prof >= 0.4
+Requires:	ghc-base-prof >= 3
 
 %description prof
-Profiling %{pkgname} library for GHC.  Should be installed when
-GHC's profiling subsystem is needed.
+Profiling %{pkgname} library for GHC. Should be installed when GHC's
+profiling subsystem is needed.
 
 %description prof -l pl.UTF-8
 Biblioteka profilująca %{pkgname} dla GHC. Powinna być zainstalowana
@@ -57,6 +71,7 @@ runhaskell Setup.lhs configure -v2 \
 	--docdir=%{_docdir}/%{name}-%{version}
 
 runhaskell Setup.lhs build
+
 runhaskell Setup.lhs haddock --executables
 
 %install
@@ -67,8 +82,7 @@ runhaskell Setup.lhs copy --destdir=$RPM_BUILD_ROOT
 
 # work around automatic haddock docs installation
 %{__rm} -rf %{name}-%{version}-doc
-cp -a $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version} %{name}-%{version}-doc
-%{__rm} -r $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}
+%{__mv} $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version} %{name}-%{version}-doc
 
 runhaskell Setup.lhs register \
 	--gen-pkg-config=$RPM_BUILD_ROOT%{_libdir}/%{ghcdir}/package.conf.d/%{pkgname}.conf
